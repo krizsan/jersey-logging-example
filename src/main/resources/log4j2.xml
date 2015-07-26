@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5p %-30C - %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.mule" level="info"/>
+        <Logger name="org.springframework" level="info"/>
+        <Logger name="se.ivankrizsan.mule" level="info"/>
+        <Logger name="org.mule.module.jersey" level="info"/>
+        <!--
+            Enable and disable the Jersey logging filter by setting log level
+			to debug (enabled) or info (disabled). Log levels higher than
+			info also disables logging.
+        -->
+        <Logger name="se.ivankrizsan.mule.jerseylogging.IvansJerseyLoggingFilter" level="debug"/>
+
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+		http://www.mulesoft.org/schema/mule/core
+		http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+
+		http://www.mulesoft.org/schema/mule/http
+		http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+
+		http://www.mulesoft.org/schema/mule/jersey
+		http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd">
+
+    <!--
+        HTTP listener for the new Mule HTTP transport that specifies which
+        address and port to listen for requests to the REST service.
+    -->
+    <http:listener-config name="myHttpListener" host="0.0.0.0" port="8083"/>
+
+    <spring:beans>
+        <!-- Customer resource Spring bean. -->
+        <spring:bean name="customerResource"
+             class="se.ivankrizsan.mule.jerseylogging.resources.CustomersResource"/>
+    </spring:beans>
+
+    <flow name="restServiceFlow">
+        <!--
+            Specifies the base path of the resources exposed by this REST
+            service. If the DNS name of the computer at which the service
+            runs is ivankrizsan.se, then all resource URLs will start
+            with http://ivankrizsan.se:8083/resources/v100.
+        -->
+        <http:listener config-ref="myHttpListener" path="resources/v100/*"/>
+        <jersey:resources>
+            <!--
+                Each resource that is to be exposed is to have one <component>
+                entry. A component entry can specify the resource
+                implementation using either the class attribute on the
+                <component> element or, like in the example below, a Spring bean.
+            -->
+            <component>
+                <spring-object bean="customerResource"/>
+            </component>
+            <!--
+                Tell Jersey where to look for classes implementing one or
+                more extension interfaces and annotated with @Provider.
+            -->
+            <jersey:package packageName="se.ivankrizsan.mule.jerseylogging"/>
+        </jersey:resources>
+    </flow>
+</mule>
